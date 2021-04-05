@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>network.cow.frames.interactive</groupId>
+    <artifactId>frames-ui</artifactId>
+    <packaging>pom</packaging>
+    <version>0.1.0</version>
+
+    <modules>
+        <module>frames-ui-core</module>
+        <module>frames-ui-example</module>
+    </modules>
+
+    <repositories>
+        <repository>
+            <id>cow-releases</id>
+            <url>https://maven.cow.network/releases</url>
+        </repository>
+    </repositories>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>network.cow.frames</groupId>
+            <artifactId>frames-interactive-core</artifactId>
+            <version>0.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>cow</id>
+            <name>Cow Network Packages</name>
+            <url>https://maven.cow.network/releases</url>
+        </repository>
+    </distributionManagement>
+
+</project>
