@@ -10,7 +10,7 @@ abstract class Theme {
     abstract val fontName: String
     abstract val fontStyle: Int
 
-    abstract val textColorOnBackground: Color
+    abstract val textColor: Color
     abstract val textColorOnAccent: Color
     abstract val textColorOnHighlight: Color
 

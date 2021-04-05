@@ -59,7 +59,7 @@ class LabelButton(
         when {
             this.isDisabled -> this.textComponent.color = this.theme.textColorDisabled
             this.textComponent.isTextHovered() -> this.textComponent.color = this.theme.textColorOnHighlight
-            else -> this.textComponent.color = this.theme.textColorOnBackground
+            else -> this.textComponent.color = this.theme.textColor
         }
 
         this.textComponent.fontName = this.theme.fontName
@@ -93,8 +93,6 @@ class LabelButton(
 
     override fun onMouseEnter(position: Point, relativePosition: Point) = this.update()
 
-    override fun onUpdateTheme(theme: Theme) {
-        this.update()
-    }
+    override fun onUpdateTheme(theme: Theme) = this.update()
 
 }

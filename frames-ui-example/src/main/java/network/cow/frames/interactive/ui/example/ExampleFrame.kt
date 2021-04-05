@@ -8,7 +8,9 @@ import network.cow.frames.interactive.Input
 import network.cow.frames.interactive.InteractiveFrame
 import network.cow.frames.interactive.ui.Dimensions
 import network.cow.frames.interactive.ui.component.Group
+import network.cow.frames.interactive.ui.component.LabeledSelect
 import network.cow.frames.interactive.ui.component.LabeledSwitch
+import network.cow.frames.interactive.ui.component.Select
 import network.cow.frames.interactive.ui.component.TabView
 import network.cow.frames.interactive.ui.component.Window
 import network.cow.frames.interactive.ui.theme.CowTheme
@@ -27,17 +29,20 @@ class ExampleFrame(viewportDimension: Dimension, initialUpdateInterval: Long = 5
     init {
         val group = Group(Point(), this.window.contentDimensions)
 
-        val cockSwitch = LabeledSwitch(Point(), Dimensions.matchParentWidth(21), "Enable coqq")
+        val cockSwitch = LabeledSwitch(Point(), Dimensions.matchParentWidth(19), "Enable my long coqq")
         cockSwitch.isDisabled = true
         cockSwitch.isActive = true
 
-        val languageSwitch = LabeledSwitch(Point(0, 50), Dimensions.matchParentWidth(21), "Use client language")
+        val languageSelect = LabeledSelect(Point(0, 60), Dimensions.matchParentWidth(19), "Language", arrayOf("English", "German"))
+
+        val languageSwitch = LabeledSwitch(Point(0, 40), Dimensions.matchParentWidth(19), "Use client language")
+        languageSwitch.onToggle = { languageSelect.isDisabled = it }
         languageSwitch.isActive = true
-        languageSwitch.onToggle = { println(it) }
 
         group.addComponent(cockSwitch)
-        group.addComponent(LabeledSwitch(Point(0, 25), Dimensions.matchParentWidth(21), "Enable profanity filter"))
+        group.addComponent(LabeledSwitch(Point(0, 20), Dimensions.matchParentWidth(19), "Enable profanity filter"))
         group.addComponent(languageSwitch)
+        group.addComponent(languageSelect)
 
         val tabView = TabView(
             Point(), Dimension(this.window.contentDimensions.width, this.window.contentDimensions.height),

@@ -9,37 +9,30 @@ import kotlin.math.roundToInt
 /**
  * @author Benedikt Wüller
  */
-class LabeledSwitch(position: Point, dimensions: Dimension, text: String) : Group(position, dimensions) {
+class LabeledSelect(position: Point, dimensions: Dimension, text: String, options: Array<String>) : Group(position, dimensions) {
 
     companion object {
-        private const val SWITCH_HEIGHT_PERCENTAGE = 0.9
-        private const val SWITCH_WIDTH_PERCENTAGE = 0.15
-        private const val SWITCH_MIN_WIDTH = 25
+        private const val SELECT_HEIGHT_PERCENTAGE = 1.0
+        private const val SELECT_WIDTH_PERCENTAGE = 0.3
+        private const val SELECT_MIN_WIDTH = 45
 
         private const val TEXT_WIDTH_PERCENTAGE = 0.6
     }
 
     var isDisabled
         set(value) {
-            this.switchComponent.isDisabled = value
+            this.selectComponent.isDisabled = value
             this.update()
         }
-        get() = this.switchComponent.isDisabled
+        get() = this.selectComponent.isDisabled
 
-    var isActive: Boolean
-        set(value) {
-            this.switchComponent.isActive = value
-            this.update()
-        }
-        get() = this.switchComponent.isActive
-
-    var onToggle: ((Boolean) -> Unit)?
-        set(value) { this.switchComponent.onToggle = value }
-        get() = this.switchComponent.onToggle
+    var onSelect: ((String) -> Unit)?
+        set(value) { this.selectComponent.onSelect = value }
+        get() = this.selectComponent.onSelect
 
     val textComponent: ScrollingText
 
-    private val switchComponent: Switch
+    private val selectComponent: Select
 
     init {
         this.textComponent = ScrollingText(
@@ -47,19 +40,19 @@ class LabeledSwitch(position: Point, dimensions: Dimension, text: String) : Grou
             this.theme.fontName, this.theme.fontStyle, HorizontalAlignment.LEFT
         )
 
-        this.switchComponent = Switch(Point(), Dimension())
+        this.selectComponent = Select(Point(), Dimension(), options)
     }
 
     override fun onEnable() {
         this.update()
 
         this.addComponent(this.textComponent)
-        this.addComponent(this.switchComponent)
+        this.addComponent(this.selectComponent)
     }
 
     private fun update() {
-        val switchWidth = maxOf((this.dimensions.width * SWITCH_WIDTH_PERCENTAGE).roundToInt(), SWITCH_MIN_WIDTH)
-        val switchHeight = (this.dimensions.height * SWITCH_HEIGHT_PERCENTAGE).roundToInt()
+        val switchWidth = maxOf((this.dimensions.width * SELECT_WIDTH_PERCENTAGE).roundToInt(), SELECT_MIN_WIDTH)
+        val switchHeight = (this.dimensions.height * SELECT_HEIGHT_PERCENTAGE).roundToInt()
         val textWidth = (this.dimensions.width * TEXT_WIDTH_PERCENTAGE).roundToInt()
 
         this.textComponent.dimensions.setSize(textWidth, this.dimensions.height)
@@ -67,8 +60,8 @@ class LabeledSwitch(position: Point, dimensions: Dimension, text: String) : Grou
         this.textComponent.fontName = theme.fontName
         this.textComponent.fontStyle = theme.fontStyle
 
-        this.switchComponent.position.location = Point(this.dimensions.width - switchWidth, (this.dimensions.height - switchHeight) / 2)
-        this.switchComponent.dimensions.setSize(switchWidth, switchHeight)
+        this.selectComponent.position.location = Point(this.dimensions.width - switchWidth, (this.dimensions.height - switchHeight) / 2)
+        this.selectComponent.dimensions.setSize(switchWidth, switchHeight)
     }
 
     override fun onUpdateTheme(theme: Theme) = this.update()

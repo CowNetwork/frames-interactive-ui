@@ -11,7 +11,7 @@ class CowTheme : Theme() {
     override val fontName: String = Font.SANS_SERIF
     override val fontStyle: Int = Font.BOLD
 
-    override val textColorOnBackground: Color = Color(240, 240, 240)
+    override val textColor: Color = Color(240, 240, 240)
     override val textColorOnAccent: Color = Color(42, 42, 42)
     override val textColorOnHighlight: Color = Color(248, 151, 217)
 

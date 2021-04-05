@@ -55,7 +55,7 @@ class Window(dimensions: Dimension, initialTheme: Theme) : Group(Point(), dimens
         super.addComponent(backButton)
         super.addComponent(closeButton)
         super.addComponent(this.contentView)
-        super.addComponent(this.cursorComponent)
+//        super.addComponent(this.cursorComponent)
 
         this.theme = initialTheme
     }

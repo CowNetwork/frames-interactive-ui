@@ -11,7 +11,7 @@ class DummyTheme : Theme() {
     override val fontName: String = Font.SANS_SERIF
     override val fontStyle: Int = Font.PLAIN
 
-    override val textColorOnBackground: Color = Color.BLACK
+    override val textColor: Color = Color.BLACK
     override val textColorOnAccent: Color = Color.BLACK
     override val textColorOnHighlight: Color = Color.BLACK
 
