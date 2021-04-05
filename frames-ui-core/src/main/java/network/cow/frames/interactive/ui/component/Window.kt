@@ -25,6 +25,8 @@ class Window(dimensions: Dimension, initialTheme: Theme) : Group(Point(), dimens
 
     var parent: Window? = null
 
+    private val backgroundComponent = ColorComponent(Point(), this.dimensions, this.theme.backgroundColor)
+
     // TODO: replace with cursor image
     private val cursorComponent = ColorComponent(Point(), Dimension(5, 8), Color.WHITE)
 
@@ -33,8 +35,6 @@ class Window(dimensions: Dimension, initialTheme: Theme) : Group(Point(), dimens
     val contentDimensions: Dimension; get() = this.contentComponent.dimensions
 
     init {
-        this.theme = initialTheme
-
         val navigationHeight = minOf(maxOf((NAVIGATION_HEIGHT_PERCENTAGE * this.dimensions.width).roundToInt(), NAVIGATION_MIN_HEIGHT), NAVIGATION_MAX_HEIGHT)
         val navigationPadding = (NAVIGATION_PADDING_PERCENTAGE * this.dimensions.width).roundToInt()
         val padding = (PADDING_PERCENTAGE * this.dimensions.width).roundToInt()
@@ -51,11 +51,13 @@ class Window(dimensions: Dimension, initialTheme: Theme) : Group(Point(), dimens
 
         val closeButton = LabelButton(Point(this.dimensions.width - buttonWidth - padding, navigationPadding), Dimension(buttonWidth, navigationHeight), "CLOSE", HorizontalAlignment.RIGHT)
 
-        super.addComponent(ColorComponent(Point(), this.dimensions, this.theme.backgroundColor))
+        super.addComponent(this.backgroundComponent)
         super.addComponent(backButton)
         super.addComponent(closeButton)
         super.addComponent(this.contentComponent)
         super.addComponent(this.cursorComponent)
+
+        this.theme = initialTheme
     }
 
     override fun addComponent(component: Component?) {
@@ -69,6 +71,10 @@ class Window(dimensions: Dimension, initialTheme: Theme) : Group(Point(), dimens
     override fun updateCursor(previousPosition: Point, position: Point) {
         super.updateCursor(previousPosition, position)
         this.cursorComponent.position.location = position
+    }
+
+    override fun onUpdateTheme(theme: Theme) {
+        this.backgroundComponent.color = theme.backgroundColor
     }
 
 }

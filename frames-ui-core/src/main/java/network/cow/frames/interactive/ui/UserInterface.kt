@@ -69,7 +69,9 @@ interface UserInterface {
 
     fun onMouseLeave(position: Point, relativePosition: Point) = Unit
 
-    fun update(currentTime: Long, delta: Long) = Unit
+    fun update(currentTime: Long, delta: Long) {
+        this.getCompanion().currentTime = currentTime
+    }
 
     fun updateTheme(theme: Theme) {
         this.onUpdateTheme(theme)

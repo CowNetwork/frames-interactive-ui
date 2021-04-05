@@ -63,6 +63,7 @@ class LabelButton(
     }
 
     override fun onInputActivate(input: Input) {
+        if (input != Input.INTERACT_PRIMARY) return
         if (!this.textComponent.isTextHovered()) return
 
         if (this.isActive) return
@@ -73,6 +74,7 @@ class LabelButton(
     }
 
     override fun onInputDeactivate(input: Input) {
+        if (input != Input.INTERACT_PRIMARY) return
         if (!this.textComponent.isTextHovered()) return
 
         if (!this.isActive) return

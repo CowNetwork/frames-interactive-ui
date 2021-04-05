@@ -25,7 +25,9 @@ open class Group(position: Point, dimensions: Dimension) : CompoundComponent(pos
         }
 
     override fun addComponent(component: Component?) {
-        if (component is Group) {
+        if (component is UIComponent) {
+            component.theme = this.theme
+        } else if (component is Group) {
             component.theme = this.theme
         }
         super.addComponent(component)
@@ -45,14 +47,18 @@ open class Group(position: Point, dimensions: Dimension) : CompoundComponent(pos
     override fun getBounds(): Rectangle = this.calculateBounds()
 
     override fun onInputActivate(input: Input) {
-        this.components.forEach {
+        this.components.filter {
+            !this.removedComponents.contains(it)
+        }.forEach {
             if (it !is UserInterface) return@forEach
             it.activateInput(input)
         }
     }
 
     override fun onInputDeactivate(input: Input) {
-        this.components.forEach {
+        this.components.filter {
+            !this.removedComponents.contains(it)
+        }.forEach {
             if (it !is UserInterface) return@forEach
             it.deactivateInput(input)
         }
@@ -60,7 +66,9 @@ open class Group(position: Point, dimensions: Dimension) : CompoundComponent(pos
 
     override fun update(currentTime: Long, delta: Long) {
         super.update(currentTime, delta)
-        this.components.forEach {
+        this.components.filter {
+            !this.removedComponents.contains(it)
+        }.forEach {
             if (it !is UserInterface) return@forEach
             it.update(currentTime, delta)
         }
@@ -72,7 +80,9 @@ open class Group(position: Point, dimensions: Dimension) : CompoundComponent(pos
         val prevRelative = this.getRelativePosition(previousPosition)
         val newRelative = this.getRelativePosition(position)
 
-        this.components.forEach {
+        this.components.filter {
+            !this.removedComponents.contains(it)
+        }.forEach {
             if (it !is UserInterface) return@forEach
             it.updateCursor(prevRelative, newRelative)
         }

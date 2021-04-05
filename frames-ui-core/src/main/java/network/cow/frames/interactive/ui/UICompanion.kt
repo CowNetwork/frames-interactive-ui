@@ -8,6 +8,8 @@ import java.awt.Point
  */
 class UICompanion(var cursorPosition: Point? = null) {
 
+    var currentTime: Long = 0
+
     val activeInputs = mutableSetOf<Input>()
 
     fun reset() {

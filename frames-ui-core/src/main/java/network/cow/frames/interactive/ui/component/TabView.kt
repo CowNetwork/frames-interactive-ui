@@ -31,7 +31,7 @@ class TabView(position: Point, dimensions: Dimension, private val tabs: Array<Ta
     init {
         val padding = (this.dimensions.width * PADDING_PERCENTAGE).roundToInt()
         val buttonWidth = (this.dimensions.width - (this.tabs.size - 1) * padding) / this.tabs.size
-        val buttonHeight = maxOf((this.dimensions.height * BUTTON_HEIGHT_PERCENTAGE).roundToInt(), BUTTON_MIN_HEIGHT)
+        val buttonHeight = maxOf((this.dimensions.width * BUTTON_HEIGHT_PERCENTAGE).roundToInt(), BUTTON_MIN_HEIGHT)
 
         this.tabCompoundView = Group(Point(0, 0), Dimension(this.dimensions.width, buttonHeight))
 

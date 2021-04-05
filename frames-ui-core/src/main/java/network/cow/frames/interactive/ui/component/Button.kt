@@ -43,6 +43,7 @@ class Button(
 
     var isActive = false
         set(value) {
+            if (field == value) return
             if (value && this.isDisabled) return
             field = value
 
@@ -128,6 +129,7 @@ class Button(
     override fun onMouseLeave(position: Point, relativePosition: Point) = this.update()
 
     override fun onInputActivate(input: Input) {
+        if (input != Input.INTERACT_PRIMARY) return
         if (this.isToggle) {
             this.isActive = !this.isActive
         } else {
@@ -136,6 +138,7 @@ class Button(
     }
 
     override fun onInputDeactivate(input: Input) {
+        if (input != Input.INTERACT_PRIMARY) return
         if (this.isToggle) return
         this.isActive = false
     }
