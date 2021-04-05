@@ -19,25 +19,28 @@ class TabView(position: Point, dimensions: Dimension, private val tabs: Array<Ta
         private const val BUTTON_MIN_HEIGHT = 14
     }
 
-    private val tabCompoundView: Group
+    private val tabCompoundView = Group(Point(), Dimension())
 
-    private val contentViewBackground: ColorComponent
-    private val contentView: Group
+    private val contentView = Group(Point(), Dimension())
 
-    private val buttons: Array<Button>
+    private lateinit var buttons: Array<Button>
 
     private var currentTab: Int = -1
 
     init {
+        this.addComponent(tabCompoundView)
+        this.addComponent(contentView)
+    }
+
+    override fun onEnable() {
         val padding = (this.dimensions.width * PADDING_PERCENTAGE).roundToInt()
         val buttonWidth = (this.dimensions.width - (this.tabs.size - 1) * padding) / this.tabs.size
         val buttonHeight = maxOf((this.dimensions.width * BUTTON_HEIGHT_PERCENTAGE).roundToInt(), BUTTON_MIN_HEIGHT)
 
-        this.tabCompoundView = Group(Point(0, 0), Dimension(this.dimensions.width, buttonHeight))
+        this.tabCompoundView.dimensions.setSize(this.dimensions.width, buttonHeight)
 
-        this.contentView = Group(Point(0, buttonHeight + padding), Dimension(this.dimensions.width, this.dimensions.height - buttonHeight - padding))
-        this.contentViewBackground = ColorComponent(Point(0, 0), this.contentView.dimensions, this.theme.backgroundColorDark)
-//        this.contentView.addComponent(this.contentViewBackground)
+        this.contentView.position.location = Point(0, buttonHeight + padding)
+        this.contentView.dimensions.setSize(this.dimensions.width, this.dimensions.height - buttonHeight - padding)
 
         val buttons = mutableListOf<Button>()
         this.tabs.forEachIndexed { index, tab ->
@@ -86,10 +89,8 @@ class TabView(position: Point, dimensions: Dimension, private val tabs: Array<Ta
             this.tabCompoundView.addComponent(button)
             buttons.add(button)
         }
-        this.buttons = buttons.toTypedArray()
 
-        this.addComponent(tabCompoundView)
-        this.addComponent(contentView)
+        this.buttons = buttons.toTypedArray()
 
         this.setTab(0)
     }
@@ -105,10 +106,6 @@ class TabView(position: Point, dimensions: Dimension, private val tabs: Array<Ta
         }
 
         this.buttons[index].isActive = true
-    }
-
-    override fun onUpdateTheme(theme: Theme) {
-        this.contentViewBackground.color = this.theme.backgroundColorDark
     }
 
     class Tab(label: String, content: Component, disabled: Boolean = false) {

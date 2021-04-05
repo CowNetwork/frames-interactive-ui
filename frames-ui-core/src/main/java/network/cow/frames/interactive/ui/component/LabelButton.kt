@@ -37,9 +37,9 @@ class LabelButton(
         }
 
     val textComponent: ScrollingText = ScrollingText(
-        Point(0, 0), text,
+        Point(), text,
         this.theme.textColorOnHighlight,
-        this.dimensions,
+        Dimension(),
         this.theme.fontName, this.theme.fontStyle,
         this.alignment
     )
@@ -49,6 +49,10 @@ class LabelButton(
 
     init {
         this.addComponent(this.textComponent)
+    }
+
+    override fun onEnable() {
+        this.textComponent.dimensions.setSize(this.dimensions.width, this.dimensions.height)
     }
 
     private fun update() {

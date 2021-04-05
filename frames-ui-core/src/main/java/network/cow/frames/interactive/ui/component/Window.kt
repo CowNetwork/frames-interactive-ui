@@ -61,10 +61,16 @@ class Window(dimensions: Dimension, initialTheme: Theme) : Group(Point(), dimens
     }
 
     override fun addComponent(component: Component?) {
+        if (component is Window) {
+            throw IllegalArgumentException("Windows must not be added inside of windows.")
+        }
         this.contentView.addComponent(component)
     }
 
     override fun addComponentBelow(component: Component?, other: Component) {
+        if (component is Window) {
+            throw IllegalArgumentException("Windows must not be added inside of windows.")
+        }
         this.contentView.addComponentBelow(component, other)
     }
 

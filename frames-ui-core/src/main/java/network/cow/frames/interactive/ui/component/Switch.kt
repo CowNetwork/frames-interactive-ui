@@ -61,6 +61,10 @@ class Switch(position: Point, dimensions: Dimension) : UIComponent(position, dim
         this.update()
     }
 
+    override fun onEnable() {
+        this.update()
+    }
+
     private fun update() {
         this.dirty = true
 

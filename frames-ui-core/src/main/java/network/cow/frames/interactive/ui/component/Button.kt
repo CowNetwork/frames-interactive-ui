@@ -62,17 +62,8 @@ class Button(
             this.textComponent.alignment = value
         }
 
-    private val backgroundComponent = ColorComponent(
-        Point(),
-        Dimension(this.dimensions.width, this.dimensions.height),
-        this.theme.highlightColor
-    )
-
-    private val underlineComponent = ColorComponent(
-        Point(0, (this.dimensions.height * (1.0 - UNDERLINE_PERCENTAGE)).toInt()),
-        Dimension(this.dimensions.width, ceil(this.dimensions.height * UNDERLINE_PERCENTAGE).toInt()),
-        this.theme.highlightColorDark
-    )
+    private val backgroundComponent = ColorComponent(Point(), Dimension(), this.theme.highlightColor)
+    private val underlineComponent = ColorComponent(Point(), Dimension(), this.theme.highlightColorDark)
 
     val textComponent: ScrollingText
 
@@ -94,6 +85,13 @@ class Button(
         )
 
         this.addComponent(this.textComponent)
+    }
+
+    override fun onEnable() {
+        this.backgroundComponent.dimensions.setSize(this.dimensions.width, this.dimensions.height)
+
+        this.underlineComponent.position.location = Point(0, (this.dimensions.height * (1.0 - UNDERLINE_PERCENTAGE)).toInt())
+        this.underlineComponent.dimensions.setSize(this.dimensions.width, ceil(this.dimensions.height * UNDERLINE_PERCENTAGE).toInt())
     }
 
     private fun update() {

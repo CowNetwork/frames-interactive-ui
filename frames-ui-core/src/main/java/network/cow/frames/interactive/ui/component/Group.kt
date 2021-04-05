@@ -43,8 +43,6 @@ open class Group(position: Point, dimensions: Dimension) : CompoundComponent(pos
         if (component == null) return
 
         if (component.dimensions.width == Dimensions.MATCH_PARENT) {
-            println(component.dimensions.width)
-            println(this.dimensions.width)
             component.dimensions.width = this.dimensions.width
         }
 
