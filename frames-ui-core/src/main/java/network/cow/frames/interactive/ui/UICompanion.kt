@@ -14,6 +14,7 @@ class UICompanion(var cursorPosition: Point? = null) {
 
     fun reset() {
         this.cursorPosition = null
+        this.currentTime = 0
     }
 
 }

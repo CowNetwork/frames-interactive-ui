@@ -73,6 +73,13 @@ interface UserInterface {
         this.getCompanion().currentTime = currentTime
     }
 
+    fun enable() {
+        this.onEnable()
+    }
+
+    // TODO: move all initializer logic here
+    fun onEnable() = Unit
+
     fun updateTheme(theme: Theme) {
         this.onUpdateTheme(theme)
     }
@@ -80,6 +87,7 @@ interface UserInterface {
     fun onUpdateTheme(theme: Theme) = Unit
 
     fun reset() {
+        this.getCompanion().activeInputs.forEach(this::deactivateInput)
         this.getCompanion().reset()
     }
 

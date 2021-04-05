@@ -16,7 +16,7 @@ abstract class UIComponent(position: Point, dimensions: Dimension) : Component(p
 
     var theme: Theme = DummyTheme()
         set(value) {
-            if (field != value) return
+            if (field == value) return
             field = value
             this.updateTheme(value)
         }

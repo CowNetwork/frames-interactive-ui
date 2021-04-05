@@ -2,9 +2,7 @@ package network.cow.frames.interactive.ui.component
 
 import network.cow.frames.interactive.Input
 import network.cow.frames.interactive.ui.animate
-import network.cow.frames.interactive.ui.easeInOutQuad
-import network.cow.frames.interactive.ui.easeInOutQuint
-import network.cow.frames.interactive.ui.easeOutCubic
+import network.cow.frames.interactive.ui.easeOutQuad
 import network.cow.frames.interactive.ui.theme.Theme
 import java.awt.Color
 import java.awt.Dimension
@@ -42,12 +40,22 @@ class Switch(position: Point, dimensions: Dimension) : UIComponent(position, dim
     private var backgroundColor = Color.WHITE
     private var knobColor = Color.BLACK
 
-    var isActive = false
+    var isDisabled = false
         set(value) {
             if (field == value) return
             field = value
             this.update()
         }
+
+    var isActive = false
+        set(value) {
+            if (field == value) return
+            field = value
+            this.onToggle?.let { it(value) }
+            this.update()
+        }
+
+    var onToggle: ((Boolean) -> Unit)? = null
 
     init {
         this.update()
@@ -60,7 +68,7 @@ class Switch(position: Point, dimensions: Dimension) : UIComponent(position, dim
         this.knobDiameter = ceil(diameter * INNER_RADIUS_PERCENTAGE).toInt()
         this.knobOffset = (this.diameter - this.knobDiameter) / 2
 
-        val hoverOffset = if (this.isHovered()) floor(this.dimensions.width * HOVER_OFFSET_PERCENTAGE).toInt() else 0
+        val hoverOffset = if (!this.isDisabled && this.isHovered()) floor(this.dimensions.width * HOVER_OFFSET_PERCENTAGE).toInt() else 0
 
         val targetPosition = when {
             this.isActive -> this.dimensions.width - this.knobDiameter - this.knobOffset - hoverOffset
@@ -78,14 +86,26 @@ class Switch(position: Point, dimensions: Dimension) : UIComponent(position, dim
             this.animationDuration = ((abs(this.targetPosition - this.sourcePosition) / this.dimensions.width.toDouble()) * MAX_ANIMATION_DURATION).roundToLong()
         }
 
-        this.backgroundColor = if (this.isActive) this.theme.accentColor else this.theme.highlightColorDark
-        this.knobColor = if (this.isActive) this.theme.highlightColorDark else this.theme.accentColorDark
+        when {
+            this.isDisabled -> {
+                this.backgroundColor = this.theme.backgroundColorDark
+                this.knobColor = this.theme.highlightColor
+            }
+            this.isActive -> {
+                this.backgroundColor = this.theme.accentColor
+                this.knobColor = this.theme.highlightColor
+            }
+            else -> {
+                this.backgroundColor = this.theme.highlightColor
+                this.knobColor = this.theme.accentColor
+            }
+        }
     }
 
     override fun update(currentTime: Long, delta: Long) {
         super.update(currentTime, delta)
 
-        val knobPosition = animate(this.sourcePosition, this.targetPosition, this.animationDuration, this.animationStartedAt, currentTime, ::easeOutCubic).roundToInt()
+        val knobPosition = animate(this.sourcePosition, this.targetPosition, this.animationDuration, this.animationStartedAt, currentTime, ::easeOutQuad).roundToInt()
 
         if (this.knobPosition != knobPosition) {
             this.dirty = true
@@ -115,6 +135,7 @@ class Switch(position: Point, dimensions: Dimension) : UIComponent(position, dim
 
     override fun onInputActivate(input: Input) {
         if (input != Input.INTERACT_PRIMARY) return
+        if (this.isDisabled) return
         this.isActive = !this.isActive
     }
 
@@ -122,6 +143,8 @@ class Switch(position: Point, dimensions: Dimension) : UIComponent(position, dim
 
     override fun onMouseLeave(position: Point, relativePosition: Point)  = this.update()
 
-    override fun onUpdateTheme(theme: Theme) = this.update()
+    override fun onUpdateTheme(theme: Theme) {
+        this.update()
+    }
 
 }

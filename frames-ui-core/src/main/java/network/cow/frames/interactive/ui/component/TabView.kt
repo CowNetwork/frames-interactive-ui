@@ -37,7 +37,7 @@ class TabView(position: Point, dimensions: Dimension, private val tabs: Array<Ta
 
         this.contentView = Group(Point(0, buttonHeight + padding), Dimension(this.dimensions.width, this.dimensions.height - buttonHeight - padding))
         this.contentViewBackground = ColorComponent(Point(0, 0), this.contentView.dimensions, this.theme.backgroundColorDark)
-        this.contentView.addComponent(this.contentViewBackground)
+//        this.contentView.addComponent(this.contentViewBackground)
 
         val buttons = mutableListOf<Button>()
         this.tabs.forEachIndexed { index, tab ->

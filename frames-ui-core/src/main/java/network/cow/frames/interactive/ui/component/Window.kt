@@ -30,16 +30,16 @@ class Window(dimensions: Dimension, initialTheme: Theme) : Group(Point(), dimens
     // TODO: replace with cursor image
     private val cursorComponent = ColorComponent(Point(), Dimension(5, 8), Color.WHITE)
 
-    private val contentComponent: Group
+    private val contentView: Group
 
-    val contentDimensions: Dimension; get() = this.contentComponent.dimensions
+    val contentDimensions: Dimension; get() = this.contentView.dimensions
 
     init {
         val navigationHeight = minOf(maxOf((NAVIGATION_HEIGHT_PERCENTAGE * this.dimensions.width).roundToInt(), NAVIGATION_MIN_HEIGHT), NAVIGATION_MAX_HEIGHT)
         val navigationPadding = (NAVIGATION_PADDING_PERCENTAGE * this.dimensions.width).roundToInt()
         val padding = (PADDING_PERCENTAGE * this.dimensions.width).roundToInt()
 
-        this.contentComponent = Group(
+        this.contentView = Group(
             Point(padding, navigationHeight + navigationPadding * 2),
             Dimension(this.dimensions.width - padding * 2, this.dimensions.height - (navigationHeight + navigationPadding * 2) - padding)
         )
@@ -54,18 +54,18 @@ class Window(dimensions: Dimension, initialTheme: Theme) : Group(Point(), dimens
         super.addComponent(this.backgroundComponent)
         super.addComponent(backButton)
         super.addComponent(closeButton)
-        super.addComponent(this.contentComponent)
+        super.addComponent(this.contentView)
         super.addComponent(this.cursorComponent)
 
         this.theme = initialTheme
     }
 
     override fun addComponent(component: Component?) {
-        this.contentComponent.addComponent(component)
+        this.contentView.addComponent(component)
     }
 
     override fun addComponentBelow(component: Component?, other: Component) {
-        this.contentComponent.addComponentBelow(component, other)
+        this.contentView.addComponentBelow(component, other)
     }
 
     override fun updateCursor(previousPosition: Point, position: Point) {

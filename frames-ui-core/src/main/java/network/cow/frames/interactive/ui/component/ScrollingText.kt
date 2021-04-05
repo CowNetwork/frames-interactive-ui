@@ -81,10 +81,6 @@ class ScrollingText(
     var delayPerPixel: Double = 25.0
     var extraWidthFactor: Double = 0.5
 
-    init {
-        this.update()
-    }
-
     private fun updateFont() {
         if (!this.dirty) return
         this.font = Font(fontName, fontStyle, (this.dimensions.height * FONT_HEIGHT_PERCENTAGE).roundToInt())

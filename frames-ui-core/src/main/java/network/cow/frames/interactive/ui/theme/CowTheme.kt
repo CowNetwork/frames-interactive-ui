@@ -24,8 +24,8 @@ class CowTheme : Theme() {
     override val backgroundColor: Color = Color(47, 47, 47)
     override val backgroundColorDark: Color = Color(38, 38, 38)
 
-    override val highlightColor: Color = Color(75, 75, 75)
-    override val highlightColorDark: Color = Color(	60, 60, 60)
+    override val highlightColor: Color = Color(80, 80, 80)
+    override val highlightColorDark: Color = Color(	63, 63, 63)
 
     override val accentColor: Color = Color(248, 151, 217)
     override val accentColorDark: Color = Color(165, 101, 143)
