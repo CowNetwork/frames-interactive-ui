@@ -2,7 +2,6 @@ package network.cow.frames.interactive.ui.component
 
 import network.cow.frames.alignment.HorizontalAlignment
 import network.cow.frames.interactive.ui.Dimensions
-import network.cow.frames.interactive.ui._old.component.ScrollingText
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.Font
@@ -32,7 +31,7 @@ class Text(position: Point = Point(), dimensions: Dimension = Dimensions.matchPa
     private var steps = 0
     private var remainingDelta = 0.0
 
-    private var font = Font(this.theme.fontName, this.theme.fontStyle, (this.dimensions.height * ScrollingText.FONT_HEIGHT_PERCENTAGE).roundToInt())
+    private var font = Font(this.theme.fontName, this.theme.fontStyle, (this.dimensions.height * FONT_HEIGHT_PERCENTAGE).roundToInt())
 
     var content: String by Delegates.observable(text, ::observeProperty)
 
