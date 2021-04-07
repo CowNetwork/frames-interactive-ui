@@ -1,7 +1,6 @@
-package network.cow.frames.interactive.ui
+package network.cow.frames.interactive.ui._old
 
 import network.cow.frames.interactive.Input
-import network.cow.frames.interactive.ui.component.Group
 import network.cow.frames.interactive.ui.theme.Theme
 import java.awt.Point
 import java.awt.Rectangle
@@ -74,11 +73,11 @@ interface UserInterface {
     }
 
     fun enable() {
-        this.onEnable()
+        this.onShow()
     }
 
     // TODO: move all initializer logic here
-    fun onEnable() = Unit
+    fun onShow() = Unit
 
     fun updateTheme(theme: Theme) {
         this.onUpdateTheme(theme)

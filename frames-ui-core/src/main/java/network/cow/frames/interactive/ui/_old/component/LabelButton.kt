@@ -1,4 +1,4 @@
-package network.cow.frames.interactive.ui.component
+package network.cow.frames.interactive.ui._old.component
 
 import network.cow.frames.alignment.HorizontalAlignment
 import network.cow.frames.interactive.Input
@@ -51,7 +51,7 @@ class LabelButton(
         this.addComponent(this.textComponent)
     }
 
-    override fun onEnable() {
+    override fun onShow() {
         this.textComponent.dimensions.setSize(this.dimensions.width, this.dimensions.height)
     }
 

@@ -9,17 +9,14 @@ import java.awt.Font
 class CowTheme : Theme() {
 
     override val fontName: String = Font.SANS_SERIF
-    override val fontStyle: Int = Font.BOLD
+    override val fontStyle: Int = Font.PLAIN
 
     override val textColor: Color = Color(240, 240, 240)
+    override val textColorDisabled: Color = Color(90, 90, 90)
+    override val textColorAccent: Color = Color(248, 151, 217)
+
     override val textColorOnAccent: Color = Color(42, 42, 42)
     override val textColorOnHighlight: Color = Color(248, 151, 217)
-
-    override val textColorDisabled: Color = Color(90, 90, 90)
-    override val textColorInfo: Color = Color(23, 162, 184)
-    override val textColorSuccess: Color = Color(40, 167, 69)
-    override val textColorWarning: Color = Color(255, 193, 7)
-    override val textColorError: Color = Color(220, 53, 69)
 
     override val backgroundColor: Color = Color(47, 47, 47)
     override val backgroundColorDark: Color = Color(38, 38, 38)

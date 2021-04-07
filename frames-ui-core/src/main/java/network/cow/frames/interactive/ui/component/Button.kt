@@ -2,147 +2,105 @@ package network.cow.frames.interactive.ui.component
 
 import network.cow.frames.alignment.HorizontalAlignment
 import network.cow.frames.component.ColorComponent
-import network.cow.frames.interactive.Input
-import network.cow.frames.interactive.ui.theme.Theme
+import network.cow.frames.interactive.ui.Dimensions
+import network.cow.frames.interactive.ui.Positions
 import java.awt.Dimension
 import java.awt.Point
-import kotlin.math.ceil
-import kotlin.math.roundToInt
+import kotlin.properties.Delegates
+import kotlin.reflect.KProperty
 
 /**
  * @author Benedikt Wüller
  */
 class Button(
-    position: Point, dimensions: Dimension,
-    text: String, alignment: HorizontalAlignment = HorizontalAlignment.CENTER
+    position: Point,
+    dimensions: Dimension = Dimensions.matchParent(),
+    text: String,
+    alignment: HorizontalAlignment = HorizontalAlignment.CENTER
 ) : Group(position, dimensions) {
 
     companion object {
         private const val UNDERLINE_PERCENTAGE = 0.08
 
-        private const val TEXT_HEIGHT_PERCENTAGE = 0.9
-        private const val TEXT_MIN_HEIGHT = 17
+        private const val TEXT_HORIZONTAL_PADDING = 0.1
+        private const val TEXT_HEIGHT_PERCENTAGE = 0.925
     }
 
-    var onActivate: (() -> Unit)? = null
-    var onDeactivate: (() -> Unit)? = null
+    var content: String by Delegates.observable(text, ::observeProperty)
 
-    var isDisabled = false
-        set(value) {
-            if (field == value) return
-            field = value
+    var alignment: HorizontalAlignment by Delegates.observable(alignment, ::observeProperty)
 
-            if (value && this.isActive) {
-                this.isActive = false
-            }
+    var isToggle: Boolean by Delegates.observable(false, ::observeProperty)
 
-            this.update()
-        }
+    var isActive: Boolean by Delegates.observable(false, ::observeProperty)
 
-    var isToggle = false
+    private val background = ColorComponent(Point(), Dimensions.matchParent(), this.theme.highlightColor)
 
-    var isActive = false
-        set(value) {
-            if (field == value) return
-            if (value && this.isDisabled) return
-            field = value
+    private val underline = ColorComponent(
+        Point(0, Positions.matchPercent(1.0 - UNDERLINE_PERCENTAGE)),
+        Dimension(Dimensions.MATCH_PARENT, Dimensions.matchPercent(UNDERLINE_PERCENTAGE)),
+        this.theme.highlightColorDark
+    )
 
-            if (value) {
-                this.onActivate?.let { it() }
-            } else {
-                this.onDeactivate?.let { it() }
-            }
-
-            this.update()
-        }
-
-    var alignment = alignment
-        set(value) {
-            field = value
-            this.textComponent.alignment = value
-        }
-
-    private val backgroundComponent = ColorComponent(Point(), Dimension(), this.theme.highlightColor)
-    private val underlineComponent = ColorComponent(Point(), Dimension(), this.theme.highlightColorDark)
-
-    val textComponent: ScrollingText
+    private val text = Text(
+        Point(Positions.matchPercent(TEXT_HORIZONTAL_PADDING * 0.5), 0),
+        Dimension(Dimensions.matchPercent(1.0 - TEXT_HORIZONTAL_PADDING), Dimensions.matchPercent(TEXT_HEIGHT_PERCENTAGE)),
+        this.content, this.theme.textColorOnHighlight, this.alignment
+    )
 
     init {
-        this.addComponent(this.backgroundComponent)
-        this.addComponent(this.underlineComponent)
-
-        val textHeight = maxOf((this.dimensions.height * TEXT_HEIGHT_PERCENTAGE).roundToInt(), TEXT_MIN_HEIGHT)
-
-        val verticalPadding = (this.dimensions.height - this.underlineComponent.dimensions.height - textHeight) / 2
-        val horizontalPadding = ((this.dimensions.height - this.underlineComponent.dimensions.height - (textHeight * ScrollingText.FONT_HEIGHT_PERCENTAGE)) / 2).roundToInt()
-
-        this.textComponent = ScrollingText(
-            Point(horizontalPadding, verticalPadding), text,
-            this.theme.textColorOnHighlight,
-            Dimension(this.dimensions.width - horizontalPadding * 2, textHeight),
-            this.theme.fontName, this.theme.fontStyle,
-            this.alignment
-        )
-
-        this.addComponent(this.textComponent)
+        this.add(this.background)
+        this.add(this.underline)
+        this.add(this.text)
     }
 
-    override fun onEnable() {
-        this.backgroundComponent.dimensions.setSize(this.dimensions.width, this.dimensions.height)
-
-        this.underlineComponent.position.location = Point(0, (this.dimensions.height * (1.0 - UNDERLINE_PERCENTAGE)).toInt())
-        this.underlineComponent.dimensions.setSize(this.dimensions.width, ceil(this.dimensions.height * UNDERLINE_PERCENTAGE).toInt())
-    }
-
-    private fun update() {
+    override fun onUpdate() {
         when {
             this.isDisabled -> {
-                this.backgroundComponent.color = theme.highlightColorDark
-                this.underlineComponent.color = theme.highlightColor
-                this.textComponent.color = theme.textColorDisabled
+                this.background.color = this.theme.highlightColorDark
+                this.underline.color = this.theme.highlightColor
+                this.text.color = this.theme.textColorDisabled
             }
             this.isActive -> {
-                this.backgroundComponent.color = theme.accentColor
-                this.underlineComponent.color = theme.accentColorDark
-                this.textComponent.color = theme.textColorOnAccent
+                this.background.color = this.theme.accentColor
+                this.underline.color = this.theme.accentColorDark
+                this.text.color = this.theme.textColorOnAccent
             }
-            this.isHovered() -> {
-                this.backgroundComponent.color = theme.highlightColor
-                this.underlineComponent.color = theme.accentColor
-                this.textComponent.color = theme.textColorOnHighlight
+            this.isHovered -> {
+                this.background.color = this.theme.highlightColor
+                this.underline.color = this.theme.accentColor
+                this.text.color = this.theme.textColorOnHighlight
             }
             else -> {
-                this.backgroundComponent.color = theme.highlightColor
-                this.underlineComponent.color = theme.highlightColorDark
-                this.textComponent.color = theme.textColorOnHighlight
+                this.background.color = this.theme.highlightColor
+                this.underline.color = this.theme.highlightColorDark
+                this.text.color = this.theme.textColorOnHighlight
             }
         }
 
-        this.textComponent.fontName = theme.fontName
-        this.textComponent.fontStyle = theme.fontStyle
+        this.text.content = this.content
+        this.text.alignment = this.alignment
+        super.onUpdate()
     }
 
-    override fun onMouseEnter(position: Point, relativePosition: Point) = this.update()
-
-    override fun onMouseLeave(position: Point, relativePosition: Point) = this.update()
-
-    override fun onInputActivate(input: Input) {
-        if (input != Input.INTERACT_PRIMARY) return
+    override fun onMouseDown() {
         if (this.isToggle) {
             this.isActive = !this.isActive
         } else {
             this.isActive = true
         }
+        super.onMouseDown()
     }
 
-    override fun onInputDeactivate(input: Input) {
-        if (input != Input.INTERACT_PRIMARY) return
-        if (this.isToggle) return
-        this.isActive = false
+    override fun onMouseUp() {
+        if (!this.isToggle) {
+            this.isActive = false
+        }
+        super.onMouseUp()
     }
 
-    override fun onUpdateTheme(theme: Theme) {
-        this.update()
+    override fun getObservedProperties(): Array<KProperty<*>> {
+        return arrayOf(*super.getObservedProperties(), this::content, this::alignment, this::isActive, this::isToggle)
     }
 
 }

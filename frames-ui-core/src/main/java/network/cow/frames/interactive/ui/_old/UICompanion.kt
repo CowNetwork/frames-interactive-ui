@@ -1,4 +1,4 @@
-package network.cow.frames.interactive.ui
+package network.cow.frames.interactive.ui._old
 
 import network.cow.frames.interactive.Input
 import java.awt.Point

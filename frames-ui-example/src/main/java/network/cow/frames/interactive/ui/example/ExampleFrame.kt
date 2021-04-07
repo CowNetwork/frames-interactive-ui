@@ -1,79 +1,105 @@
 package network.cow.frames.interactive.ui.example
 
+import network.cow.frames.alignment.HorizontalAlignment
 import network.cow.frames.color.ColorTransformer
 import network.cow.frames.color.MinecraftColorPalette
 import network.cow.frames.component.Component
-import network.cow.frames.component.DummyComponent
 import network.cow.frames.interactive.Input
 import network.cow.frames.interactive.InteractiveFrame
 import network.cow.frames.interactive.ui.Dimensions
+import network.cow.frames.interactive.ui.Positions
+import network.cow.frames.interactive.ui.Window
+import network.cow.frames.interactive.ui.component.Button
 import network.cow.frames.interactive.ui.component.Group
-import network.cow.frames.interactive.ui.component.LabeledSelect
-import network.cow.frames.interactive.ui.component.LabeledSwitch
+import network.cow.frames.interactive.ui.component.ProgressBar
 import network.cow.frames.interactive.ui.component.Select
-import network.cow.frames.interactive.ui.component.TabView
-import network.cow.frames.interactive.ui.component.Window
+import network.cow.frames.interactive.ui.component.Switch
+import network.cow.frames.interactive.ui.component.TextButton
 import network.cow.frames.interactive.ui.theme.CowTheme
+import network.cow.frames.interactive.ui.theme.DefaultTheme
 import java.awt.Dimension
 import java.awt.Point
 
 /**
  * @author Benedikt Wüller
  */
-class ExampleFrame(viewportDimension: Dimension, initialUpdateInterval: Long = 50L, transformer: ColorTransformer = MinecraftColorPalette()) :
-    InteractiveFrame(Dimension(256, 256), viewportDimension, initialUpdateInterval, transformer) {
+class ExampleFrame(canvasDimensions: Dimension, initialUpdateInterval: Long = 50L, transformer: ColorTransformer = MinecraftColorPalette()) :
+    InteractiveFrame(canvasDimensions, canvasDimensions, initialUpdateInterval, transformer) {
 
-    private val cursorPosition = Point()
     private val window = Window(this.canvasDimensions, CowTheme())
 
+    private val progressBar = ProgressBar(Point(Positions.matchPercent(0.25), 150), Dimension(Dimensions.matchPercent(0.5), 22))
+
     init {
-        val group = Group(Point(), this.window.contentDimensions)
+        var count = 0
 
-        val cockSwitch = LabeledSwitch(Point(), Dimensions.matchParentWidth(19), "Enable my long coqq")
-        cockSwitch.isDisabled = true
-        cockSwitch.isActive = true
+        val group = Group(Point(), Dimensions.matchParent())
+        val otherGroup = Group(Point(), Dimensions.matchParent())
 
-        val languageSelect = LabeledSelect(Point(0, 60), Dimensions.matchParentWidth(19), "Language", arrayOf("English", "German"))
+        val backButton = TextButton(Point(Positions.matchPercent(0.25), 50), Dimension(Dimensions.matchPercent(0.5), 25), "Go back", HorizontalAlignment.CENTER)
+        backButton.setListener(backButton::isMouseDown) { _, new -> if (new) this.window.setParentView() }
+        otherGroup.add(backButton)
 
-        val languageSwitch = LabeledSwitch(Point(0, 40), Dimensions.matchParentWidth(19), "Use client language")
-        languageSwitch.onToggle = { languageSelect.isDisabled = it }
-        languageSwitch.isActive = true
+        val button = Button(Point(Positions.matchPercent(0.25), 50), Dimension(Dimensions.matchPercent(0.5), 25), "$count", HorizontalAlignment.CENTER)
+        button.setListener(button::isActive) { _, new -> if (new) button.content = "${++count}" }
+        group.add(button)
 
-        group.addComponent(cockSwitch)
-        group.addComponent(LabeledSwitch(Point(0, 20), Dimensions.matchParentWidth(19), "Enable profanity filter"))
-        group.addComponent(languageSwitch)
-        group.addComponent(languageSelect)
+        val switch = Switch(Point(Positions.matchPercent(0.25), 100), Dimension(Dimensions.matchPercent(0.5), 25))
+        switch.setListener(switch::isActive) { _, new -> button.isDisabled = new }
+        switch.isActive = true
+        group.add(switch)
 
-        val tabView = TabView(
-            Point(), Dimension(this.window.contentDimensions.width, this.window.contentDimensions.height),
-            arrayOf(
-                TabView.Tab("Network", group), // switch: min height 17 - always odd is better
-                TabView.Tab("Friends and Party", DummyComponent(Point(), Dimension(1, 1))),
-//                TabView.Tab("NSFW", DummyComponent(Point(), Dimension(1, 1)), true)
-            )
-        )
+        val select = Select(Point(Positions.matchPercent(0.25), 75), Dimension(Dimensions.matchPercent(0.5), 25))
+        select.options = arrayOf("Milk Me At Night", "Ugly Mode")
+        select.setListener(select::selectedIndex) { _, new -> this.window.theme = if (new == 0) CowTheme() else DefaultTheme() }
+        group.add(select)
 
-        this.window.addComponent(tabView)
-    }
+        val textButton = TextButton(Point(Positions.matchPercent(0.25), 125), Dimension(Dimensions.matchPercent(0.5), 25), "Text Button", HorizontalAlignment.CENTER)
+        textButton.setListener(textButton::isMouseDown) { _, new -> if (new) this.window.setView(otherGroup) }
+        group.add(textButton)
 
-    override fun onInputActivate(input: Input, currentTime: Long) {
-        this.window.activateInput(input)
-    }
+        this.progressBar.isLabelVisible = true
+        group.add(this.progressBar)
 
-    override fun onInputDeactivate(input: Input, currentTime: Long) {
-        this.window.deactivateInput(input)
+        this.window.setView(group)
     }
 
     override fun getRenderComponent(): Component = this.window
 
     override fun onUpdate(currentTime: Long, delta: Long): Boolean {
-        this.window.update(currentTime, delta)
+        if (currentTime > 25000) {
+            this.progressBar.progress = 1.0
+        } else if (currentTime > 18000) {
+            this.progressBar.progress = 0.99
+        } else if (currentTime > 13000) {
+            this.progressBar.progress = 0.98
+        } else if (currentTime > 10000) {
+            this.progressBar.progress = 0.97
+        } else if (currentTime > 5000) {
+            this.progressBar.progress = 0.88
+        }
+
+        this.window.updateTime(currentTime, delta)
         return true
     }
 
     override fun onCursorMove(position: Point, currentTime: Long) {
-        this.window.updateCursor(this.cursorPosition, position)
-        this.cursorPosition.location = position
+        super.onCursorMove(position, currentTime)
+        this.window.updateCursorPosition(position)
+    }
+
+    override fun onInputActivate(input: Input, currentTime: Long) {
+        super.onInputActivate(input, currentTime)
+        if (input == Input.INTERACT_PRIMARY) {
+            this.window.setMouseState(true)
+        }
+    }
+
+    override fun onInputDeactivate(input: Input, currentTime: Long) {
+        super.onInputActivate(input, currentTime)
+        if (input == Input.INTERACT_PRIMARY) {
+            this.window.setMouseState(false)
+        }
     }
 
 }

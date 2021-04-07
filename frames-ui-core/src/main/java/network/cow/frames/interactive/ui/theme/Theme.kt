@@ -11,14 +11,11 @@ abstract class Theme {
     abstract val fontStyle: Int
 
     abstract val textColor: Color
+    abstract val textColorDisabled: Color
+    abstract val textColorAccent: Color
+
     abstract val textColorOnAccent: Color
     abstract val textColorOnHighlight: Color
-
-    abstract val textColorDisabled: Color
-    abstract val textColorInfo: Color
-    abstract val textColorSuccess: Color
-    abstract val textColorWarning: Color
-    abstract val textColorError: Color
 
     abstract val backgroundColor: Color
     abstract val backgroundColorDark: Color

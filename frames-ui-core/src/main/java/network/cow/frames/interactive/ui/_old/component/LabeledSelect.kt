@@ -1,4 +1,4 @@
-package network.cow.frames.interactive.ui.component
+package network.cow.frames.interactive.ui._old.component
 
 import network.cow.frames.alignment.HorizontalAlignment
 import network.cow.frames.interactive.ui.theme.Theme
@@ -13,7 +13,7 @@ class LabeledSelect(position: Point, dimensions: Dimension, text: String, option
 
     companion object {
         private const val SELECT_HEIGHT_PERCENTAGE = 1.0
-        private const val SELECT_WIDTH_PERCENTAGE = 0.3
+        private const val SELECT_WIDTH_PERCENTAGE = 0.375
         private const val SELECT_MIN_WIDTH = 45
 
         private const val TEXT_WIDTH_PERCENTAGE = 0.6
@@ -43,9 +43,10 @@ class LabeledSelect(position: Point, dimensions: Dimension, text: String, option
         this.selectComponent = Select(Point(), Dimension(), options)
     }
 
-    override fun onEnable() {
+    override fun onShow() {
         this.update()
 
+        this.clear()
         this.addComponent(this.textComponent)
         this.addComponent(this.selectComponent)
     }

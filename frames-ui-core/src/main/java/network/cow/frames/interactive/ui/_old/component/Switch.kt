@@ -1,8 +1,9 @@
-package network.cow.frames.interactive.ui.component
+package network.cow.frames.interactive.ui._old.component
 
-import network.cow.frames.interactive.ui.Dimensions
+import network.cow.frames.interactive.Input
 import network.cow.frames.interactive.ui.animate
 import network.cow.frames.interactive.ui.easeOutQuad
+import network.cow.frames.interactive.ui.theme.Theme
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.Graphics2D
@@ -14,12 +15,11 @@ import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
-import kotlin.properties.Delegates
 
 /**
  * @author Benedikt Wüller
  */
-class Switch(position: Point, dimensions: Dimension = Dimensions.matchParent()) : UIComponent(position, dimensions) {
+class Switch(position: Point, dimensions: Dimension) : UIComponent(position, dimensions) {
 
     companion object {
         private const val INNER_RADIUS_PERCENTAGE = 0.74
@@ -40,16 +40,39 @@ class Switch(position: Point, dimensions: Dimension = Dimensions.matchParent()) 
     private var backgroundColor = Color.WHITE
     private var knobColor = Color.BLACK
 
-    var isActive: Boolean by Delegates.observable(false, ::observeProperty)
+    var isDisabled = false
+        set(value) {
+            if (field == value) return
+            field = value
+            this.update()
+        }
 
-    override fun onUpdate() {
+    var isActive = false
+        set(value) {
+            if (field == value) return
+            field = value
+            this.onToggle?.let { it(value) }
+            this.update()
+        }
+
+    var onToggle: ((Boolean) -> Unit)? = null
+
+    init {
+        this.update()
+    }
+
+    override fun onShow() {
+        this.update()
+    }
+
+    private fun update() {
         this.dirty = true
 
         this.diameter = this.dimensions.height
         this.knobDiameter = ceil(diameter * INNER_RADIUS_PERCENTAGE).toInt()
         this.knobOffset = (this.diameter - this.knobDiameter) / 2
 
-        val hoverOffset = if (!this.isDisabled && this.isHovered) floor(this.dimensions.width * HOVER_OFFSET_PERCENTAGE).toInt() else 0
+        val hoverOffset = if (!this.isDisabled && this.isHovered()) floor(this.dimensions.width * HOVER_OFFSET_PERCENTAGE).toInt() else 0
 
         val targetPosition = when {
             this.isActive -> this.dimensions.width - this.knobDiameter - this.knobOffset - hoverOffset
@@ -62,7 +85,7 @@ class Switch(position: Point, dimensions: Dimension = Dimensions.matchParent()) 
             this.sourcePosition = targetPosition
         } else if (targetPosition != this.targetPosition) {
             this.sourcePosition = this.knobPosition
-            this.animationStartedAt = this.currentTime
+            this.animationStartedAt = this.getCompanion().currentTime
             this.targetPosition = targetPosition
             this.animationDuration = ((abs(this.targetPosition - this.sourcePosition) / this.dimensions.width.toDouble()) * MAX_ANIMATION_DURATION).roundToLong()
         }
@@ -83,7 +106,9 @@ class Switch(position: Point, dimensions: Dimension = Dimensions.matchParent()) 
         }
     }
 
-    override fun onUpdateTime(currentTime: Long, delta: Long) {
+    override fun update(currentTime: Long, delta: Long) {
+        super.update(currentTime, delta)
+
         val knobPosition = animate(this.sourcePosition, this.targetPosition, this.animationDuration, this.animationStartedAt, currentTime, ::easeOutQuad).roundToInt()
 
         if (this.knobPosition != knobPosition) {
@@ -112,18 +137,18 @@ class Switch(position: Point, dimensions: Dimension = Dimensions.matchParent()) 
         context.drawImage(image, minX, minY, maxX, maxY, minX, minY, maxX, maxY, null)
     }
 
-    override fun onPropertyChanged(propertyName: String) {
-        if (propertyName == this::isDisabled.name) {
-            this.isActive = false
-        }
-
-        super.onPropertyChanged(propertyName)
-    }
-
-    override fun onMouseDown() {
+    override fun onInputActivate(input: Input) {
+        if (input != Input.INTERACT_PRIMARY) return
         if (this.isDisabled) return
         this.isActive = !this.isActive
-        super.onMouseDown()
+    }
+
+    override fun onMouseEnter(position: Point, relativePosition: Point)  = this.update()
+
+    override fun onMouseLeave(position: Point, relativePosition: Point)  = this.update()
+
+    override fun onUpdateTheme(theme: Theme) {
+        this.update()
     }
 
 }

@@ -1,7 +1,7 @@
-package network.cow.frames.interactive.ui.component
+package network.cow.frames.interactive.ui._old.component
 
 import network.cow.frames.alignment.HorizontalAlignment
-import network.cow.frames.interactive.ui.UICompanion
+import network.cow.frames.interactive.ui._old.UICompanion
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.Font
@@ -58,10 +58,10 @@ class ScrollingText(
         set(value) {
             this.dirty = this.dirty || field != value
             field = value
-            this.updateFont()
+            this.update()
         }
 
-    private var font = Font(fontName, fontStyle, (this.dimensions.height * FONT_HEIGHT_PERCENTAGE).roundToInt()); set(value) {
+    private var font = Font(fontName, fontStyle, 1); set(value) {
         this.dirty = this.dirty || field != value
         field = value
         this.update()
@@ -81,9 +81,15 @@ class ScrollingText(
     var delayPerPixel: Double = 25.0
     var extraWidthFactor: Double = 0.5
 
+    override fun onShow() {
+        this.dirty = true
+        this.updateFont()
+        this.update()
+    }
+
     private fun updateFont() {
         if (!this.dirty) return
-        this.font = Font(fontName, fontStyle, (this.dimensions.height * FONT_HEIGHT_PERCENTAGE).roundToInt())
+        this.font = Font(this.fontName, this.fontStyle, (this.dimensions.height * FONT_HEIGHT_PERCENTAGE).roundToInt())
     }
 
     private fun update() {
@@ -98,6 +104,7 @@ class ScrollingText(
 
         if (this.image == null) {
             this.dirty = true
+            this.updateFont()
             return
         }
 
@@ -126,6 +133,8 @@ class ScrollingText(
     }
 
     override fun onRender(context: Graphics2D, bounds: Rectangle) {
+        if (this.font.size <= 0) return
+
         if (this.image == null) {
             this.updateImageDimensions(context)
 
@@ -173,8 +182,10 @@ class ScrollingText(
     override fun getBounds(): Rectangle = this.calculateBounds()
 
     override fun reset() {
+        this.dirty = true
         this.currentWidthCursor = 0
         this.update()
+        this.updateFont()
     }
 
 }

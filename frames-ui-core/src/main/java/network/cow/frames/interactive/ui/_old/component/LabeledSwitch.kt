@@ -1,4 +1,4 @@
-package network.cow.frames.interactive.ui.component
+package network.cow.frames.interactive.ui._old.component
 
 import network.cow.frames.alignment.HorizontalAlignment
 import network.cow.frames.interactive.ui.theme.Theme
@@ -50,9 +50,10 @@ class LabeledSwitch(position: Point, dimensions: Dimension, text: String) : Grou
         this.switchComponent = Switch(Point(), Dimension())
     }
 
-    override fun onEnable() {
+    override fun onShow() {
         this.update()
 
+        this.clear()
         this.addComponent(this.textComponent)
         this.addComponent(this.switchComponent)
     }

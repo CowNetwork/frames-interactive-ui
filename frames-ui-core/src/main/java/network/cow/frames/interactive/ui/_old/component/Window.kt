@@ -1,8 +1,10 @@
-package network.cow.frames.interactive.ui.component
+package network.cow.frames.interactive.ui._old.component
 
 import network.cow.frames.alignment.HorizontalAlignment
 import network.cow.frames.component.ColorComponent
 import network.cow.frames.component.Component
+import network.cow.frames.interactive.ui.Dimensions
+import network.cow.frames.interactive.ui._old.WindowManager
 import network.cow.frames.interactive.ui.theme.Theme
 import java.awt.Color
 import java.awt.Dimension
@@ -12,7 +14,7 @@ import kotlin.math.roundToInt
 /**
  * @author Benedikt Wüller
  */
-class Window(dimensions: Dimension, initialTheme: Theme) : Group(Point(), dimensions) {
+class Window(dimensions: Dimension = Dimensions.matchParent()) : Group(Point(), dimensions) {
 
     companion object {
         private const val NAVIGATION_HEIGHT_PERCENTAGE = 0.07
@@ -23,41 +25,43 @@ class Window(dimensions: Dimension, initialTheme: Theme) : Group(Point(), dimens
         private const val PADDING_PERCENTAGE = 0.0390625 // = 5 / 128
     }
 
-    var parent: Window? = null
+    lateinit var manager: WindowManager
 
     private val backgroundComponent = ColorComponent(Point(), this.dimensions, this.theme.backgroundColor)
+
+    private val backButton = LabelButton(Point(), Dimension(), "⮪ BACK")
+    private val closeButton = LabelButton(Point(), Dimension(), "CLOSE", HorizontalAlignment.RIGHT)
 
     // TODO: replace with cursor image
     private val cursorComponent = ColorComponent(Point(), Dimension(5, 8), Color.WHITE)
 
-    private val contentView: Group
-
-    val contentDimensions: Dimension; get() = this.contentView.dimensions
+    private val contentView = Group(Point(), Dimension())
 
     init {
+        super.addComponent(this.backgroundComponent)
+    }
+
+    override fun onShow() {
         val navigationHeight = minOf(maxOf((NAVIGATION_HEIGHT_PERCENTAGE * this.dimensions.width).roundToInt(), NAVIGATION_MIN_HEIGHT), NAVIGATION_MAX_HEIGHT)
         val navigationPadding = (NAVIGATION_PADDING_PERCENTAGE * this.dimensions.width).roundToInt()
         val padding = (PADDING_PERCENTAGE * this.dimensions.width).roundToInt()
 
-        this.contentView = Group(
-            Point(padding, navigationHeight + navigationPadding * 2),
-            Dimension(this.dimensions.width - padding * 2, this.dimensions.height - (navigationHeight + navigationPadding * 2) - padding)
-        )
+        this.contentView.position.location = Point(padding, navigationHeight + navigationPadding * 2)
+        this.contentView.dimensions.setSize(this.dimensions.width - padding * 2, this.dimensions.height - (navigationHeight + navigationPadding * 2) - padding)
 
         val buttonWidth = (this.dimensions.width - navigationPadding) / 2 - padding
 
-        val backButton = LabelButton(Point(padding, navigationPadding), Dimension(buttonWidth, navigationHeight), "⮪ BACK")
-        backButton.isDisabled = true
+        backButton.position.location = Point(padding, navigationPadding)
+        backButton.dimensions.setSize(buttonWidth, navigationHeight)
+        backButton.isDisabled = !this.manager.canNavigateUp()
+        backButton.onActivate = { this.manager.navigateUp() }
 
-        val closeButton = LabelButton(Point(this.dimensions.width - buttonWidth - padding, navigationPadding), Dimension(buttonWidth, navigationHeight), "CLOSE", HorizontalAlignment.RIGHT)
+        closeButton.position.location = Point(this.dimensions.width - buttonWidth - padding, navigationPadding)
+        closeButton.dimensions.setSize(buttonWidth, navigationHeight)
 
-        super.addComponent(this.backgroundComponent)
-        super.addComponent(backButton)
-        super.addComponent(closeButton)
+        super.addComponent(this.backButton)
+        super.addComponent(this.closeButton)
         super.addComponent(this.contentView)
-//        super.addComponent(this.cursorComponent)
-
-        this.theme = initialTheme
     }
 
     override fun addComponent(component: Component?) {

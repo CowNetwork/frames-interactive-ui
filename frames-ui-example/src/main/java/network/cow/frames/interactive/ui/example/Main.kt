@@ -8,6 +8,7 @@ import java.awt.Dimension
  */
 
 fun main() {
+//    val window = FrameWindow({ ExampleFrameOld(Dimension(256, 256)) }, "ExampleFrame", 2.0)
     val window = FrameWindow({ ExampleFrame(Dimension(256, 256)) }, "ExampleFrame", 2.0)
     window.start()
 }

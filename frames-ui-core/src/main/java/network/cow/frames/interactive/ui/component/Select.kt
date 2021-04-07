@@ -1,76 +1,90 @@
 package network.cow.frames.interactive.ui.component
 
 import network.cow.frames.alignment.HorizontalAlignment
+import network.cow.frames.interactive.ui.Dimensions
 import java.awt.Dimension
 import java.awt.Point
-import kotlin.math.floor
-import kotlin.math.roundToInt
+import kotlin.properties.Delegates
+import kotlin.reflect.KProperty
 
 /**
  * @author Benedikt Wüller
  */
-class Select(position: Point, dimensions: Dimension, private val options: Array<String>) : Group(position, dimensions) {
+class Select(position: Point, dimensions: Dimension = Dimensions.matchParent()) : Group(position, dimensions) {
 
     companion object {
         private const val DISPLAY_WIDTH_PERCENTAGE = 0.7
         private const val PADDING_PERCENTAGE = 0.025
+        private const val EMPTY_CONTENT = "-"
     }
 
-    private val leftButton = LabelButton(Point(), Dimension(), "«", HorizontalAlignment.CENTER)
-    private val rightButton = LabelButton(Point(), Dimension(), "»", HorizontalAlignment.CENTER)
+    var options: Array<String> by Delegates.observable(emptyArray(), ::observeProperty)
 
-    // TODO: this should be a scrolling text
-    private val textDisplay = LabelButton(Point(),  Dimension(), this.options.first(), HorizontalAlignment.CENTER)
+    var selectedIndex: Int by Delegates.observable(-1, ::observeProperty)
 
-    private var currentIndex = 0
-
-    var onSelect: ((String) -> Unit)? = null
-
-    var isDisabled = false
-        set(value) {
-            if (field == value) return
-            field = value
-            this.leftButton.isDisabled = value
-            this.rightButton.isDisabled = value
-            this.textDisplay.isDisabled = value
-        }
+    private val left: TextButton
+    private val display: TextButton
+    private val right: TextButton
 
     init {
-        this.leftButton.onActivate = {
-            this.currentIndex -= 1
-            if (this.currentIndex < 0) this.currentIndex = this.options.lastIndex
+        val buttonWidth = (1.0 - DISPLAY_WIDTH_PERCENTAGE) / 2 - PADDING_PERCENTAGE
 
-            val value = this.options[this.currentIndex]
-            this.textDisplay.textComponent.text = value
-            this.onSelect?.let { it(value) }
+        this.left = TextButton(Point(), Dimension(Dimensions.matchPercent(buttonWidth), Dimensions.MATCH_PARENT), "<", HorizontalAlignment.CENTER)
+
+        this.display = TextButton(
+            Point(Dimensions.matchPercent(buttonWidth + PADDING_PERCENTAGE), 0),
+            Dimension(Dimensions.matchPercent(DISPLAY_WIDTH_PERCENTAGE), Dimensions.MATCH_PARENT),
+            EMPTY_CONTENT, HorizontalAlignment.CENTER
+        )
+
+        this.right = TextButton(Point(Dimensions.matchPercent(1.0 - buttonWidth), 0), Dimension(Dimensions.matchPercent(buttonWidth), Dimensions.MATCH_PARENT), ">", HorizontalAlignment.CENTER)
+
+        val next = { value: Boolean ->
+            if (value) {
+                val index = this.selectedIndex + 1
+                if (index > this.options.lastIndex) {
+                    this.selectedIndex = 0
+                } else {
+                    this.selectedIndex = index
+                }
+            }
         }
 
-        this.rightButton.onActivate = {
-            this.currentIndex += 1
-            if (this.currentIndex > this.options.lastIndex) this.currentIndex = 0
-
-            val value = this.options[this.currentIndex]
-            this.textDisplay.textComponent.text = value
-            this.onSelect?.let { it(value) }
+        this.left.setListener(this.left::isMouseDown) { _, new ->
+            if (new) {
+                val index = this.selectedIndex - 1
+                if (index < 0) {
+                    this.selectedIndex = this.options.lastIndex
+                } else {
+                    this.selectedIndex = index
+                }
+            }
         }
+        this.display.setListener(this.left::isMouseDown) { _, new -> next(new) }
+        this.right.setListener(this.left::isMouseDown) { _, new -> next(new) }
+
+        this.add(this.left)
+        this.add(this.display)
+        this.add(this.right)
     }
 
-    override fun onEnable() {
-        val displayWidth = (this.dimensions.width * DISPLAY_WIDTH_PERCENTAGE).roundToInt()
-        val padding = floor(this.dimensions.width * PADDING_PERCENTAGE).toInt()
-        val buttonWidth = (this.dimensions.width - displayWidth) / 2 - padding
+    override fun onUpdate() {
+        if (this.options.isNotEmpty()) {
+            if (this.selectedIndex < 0 || this.selectedIndex > this.options.lastIndex) {
+                this.selectedIndex = 0
+                return
+            }
 
-        this.leftButton.dimensions.setSize(buttonWidth, this.dimensions.height)
+            this.display.content = this.options[this.selectedIndex]
+        } else {
+            this.display.content = EMPTY_CONTENT
+        }
 
-        this.textDisplay.dimensions.setSize(displayWidth, this.dimensions.height)
-        this.textDisplay.position.x = this.leftButton.dimensions.width + padding
+        super.onUpdate()
+    }
 
-        this.rightButton.dimensions.setSize(buttonWidth, this.dimensions.height)
-        this.rightButton.position.x = this.textDisplay.dimensions.width + this.textDisplay.position.x + padding
-
-        this.addComponent(this.leftButton)
-        this.addComponent(this.textDisplay)
-        this.addComponent(this.rightButton)
+    override fun getObservedProperties(): Array<KProperty<*>> {
+        return arrayOf(*super.getObservedProperties(), this::options, this::selectedIndex)
     }
 
 }

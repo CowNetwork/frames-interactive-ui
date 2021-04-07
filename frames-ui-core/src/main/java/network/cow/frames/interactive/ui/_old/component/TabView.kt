@@ -1,8 +1,6 @@
-package network.cow.frames.interactive.ui.component
+package network.cow.frames.interactive.ui._old.component
 
-import network.cow.frames.component.ColorComponent
 import network.cow.frames.component.Component
-import network.cow.frames.interactive.ui.theme.Theme
 import java.awt.Dimension
 import java.awt.Point
 import kotlin.math.roundToInt
@@ -27,12 +25,12 @@ class TabView(position: Point, dimensions: Dimension, private val tabs: Array<Ta
 
     private var currentTab: Int = -1
 
-    init {
+    override fun onShow() {
+        this.clear()
+
         this.addComponent(tabCompoundView)
         this.addComponent(contentView)
-    }
 
-    override fun onEnable() {
         val padding = (this.dimensions.width * PADDING_PERCENTAGE).roundToInt()
         val buttonWidth = (this.dimensions.width - (this.tabs.size - 1) * padding) / this.tabs.size
         val buttonHeight = maxOf((this.dimensions.width * BUTTON_HEIGHT_PERCENTAGE).roundToInt(), BUTTON_MIN_HEIGHT)
@@ -56,15 +54,10 @@ class TabView(position: Point, dimensions: Dimension, private val tabs: Array<Ta
 
             button.onActivate = {
                 if (this.currentTab != index) this.setTab(index)
-                this.contentView.addComponent(tab.content)
             }
 
             button.onDeactivate = {
-                if (this.currentTab == index) {
-                    button.isActive = true
-                } else {
-                    this.contentView.removeComponent(tab.content)
-                }
+                if (this.currentTab == index) button.isActive = true
             }
 
             tab.onUpdateContent = { old, new ->
@@ -103,9 +96,11 @@ class TabView(position: Point, dimensions: Dimension, private val tabs: Array<Ta
 
         if (lastButton >= 0) {
             this.buttons[lastButton].isActive = false
+            this.contentView.removeComponent(this.tabs[lastButton].content)
         }
 
         this.buttons[index].isActive = true
+        this.contentView.addComponent(this.tabs[index].content)
     }
 
     class Tab(label: String, content: Component, disabled: Boolean = false) {
