@@ -13,7 +13,7 @@ import kotlin.reflect.KProperty
 /**
  * @author Benedikt Wüller
  */
-open class Group(position: Point, dimensions: Dimension = Dimensions.matchParent()) : UIComponent(position, dimensions) {
+open class Group(position: Point = Point(), dimensions: Dimension = Dimensions.matchParent()) : UIComponent(position, dimensions) {
 
     private val initialDimensions = mutableMapOf<Component, Dimension>()
     private val initialPositions = mutableMapOf<Component, Point>()

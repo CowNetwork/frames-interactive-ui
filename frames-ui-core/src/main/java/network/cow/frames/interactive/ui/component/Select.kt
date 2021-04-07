@@ -10,7 +10,7 @@ import kotlin.reflect.KProperty
 /**
  * @author Benedikt Wüller
  */
-class Select(position: Point, dimensions: Dimension = Dimensions.matchParent()) : Group(position, dimensions) {
+class Select(position: Point = Point(), dimensions: Dimension = Dimensions.matchParent()) : Group(position, dimensions) {
 
     companion object {
         private const val DISPLAY_WIDTH_PERCENTAGE = 0.7

@@ -19,7 +19,7 @@ import kotlin.properties.Delegates
 /**
  * @author Benedikt Wüller
  */
-class Switch(position: Point, dimensions: Dimension = Dimensions.matchParent()) : UIComponent(position, dimensions) {
+class Switch(position: Point = Point(), dimensions: Dimension = Dimensions.matchParent()) : UIComponent(position, dimensions) {
 
     companion object {
         private const val INNER_RADIUS_PERCENTAGE = 0.74

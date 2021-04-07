@@ -13,7 +13,7 @@ import kotlin.reflect.KProperty
  * @author Benedikt Wüller
  */
 class Button(
-    position: Point,
+    position: Point = Point(),
     dimensions: Dimension = Dimensions.matchParent(),
     text: String,
     alignment: HorizontalAlignment = HorizontalAlignment.CENTER

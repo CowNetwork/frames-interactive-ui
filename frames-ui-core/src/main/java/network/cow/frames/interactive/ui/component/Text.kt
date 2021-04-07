@@ -17,7 +17,7 @@ import kotlin.reflect.KProperty
 /**
  * @author Benedikt Wüller
  */
-class Text(position: Point, dimensions: Dimension = Dimensions.matchParent(), text: String, color: Color, alignment: HorizontalAlignment = HorizontalAlignment.LEFT) : UIComponent(position, dimensions) {
+class Text(position: Point = Point(), dimensions: Dimension = Dimensions.matchParent(), text: String, color: Color, alignment: HorizontalAlignment = HorizontalAlignment.LEFT) : UIComponent(position, dimensions) {
 
     companion object {
         const val FONT_HEIGHT_PERCENTAGE = 0.5

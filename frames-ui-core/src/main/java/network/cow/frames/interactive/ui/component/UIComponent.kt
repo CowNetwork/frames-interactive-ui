@@ -12,7 +12,7 @@ import kotlin.reflect.KProperty
 /**
  * @author Benedikt Wüller
  */
-abstract class UIComponent(position: Point, dimensions: Dimension = Dimensions.matchParent()) : Component(position, dimensions) {
+abstract class UIComponent(position: Point = Point(), dimensions: Dimension = Dimensions.matchParent()) : Component(position, dimensions) {
 
     private var currentDimensions: Dimension by Delegates.observable(Dimension(dimensions)) { _, old, new -> this.onDimensionsChanged(old, new) }
 

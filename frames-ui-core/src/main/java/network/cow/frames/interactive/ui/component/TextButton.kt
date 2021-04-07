@@ -10,7 +10,7 @@ import kotlin.reflect.KProperty
 /**
  * @author Benedikt Wüller
  */
-class TextButton(position: Point, dimensions: Dimension = Dimensions.matchParent(), text: String, alignment: HorizontalAlignment = HorizontalAlignment.LEFT) : Group(position, dimensions) {
+class TextButton(position: Point = Point(), dimensions: Dimension = Dimensions.matchParent(), text: String, alignment: HorizontalAlignment = HorizontalAlignment.LEFT) : Group(position, dimensions) {
 
     var content: String by Delegates.observable(text, ::observeProperty)
 

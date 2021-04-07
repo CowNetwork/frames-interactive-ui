@@ -15,7 +15,7 @@ import kotlin.reflect.KProperty
 /**
  * @author Benedikt Wüller
  */
-class ProgressBar(position: Point, dimensions: Dimension = Dimensions.matchParent()) : Group(position, dimensions) {
+class ProgressBar(position: Point = Point(), dimensions: Dimension = Dimensions.matchParent()) : Group(position, dimensions) {
 
     companion object {
         private const val MAX_ANIMATION_DURATION = 1500L
