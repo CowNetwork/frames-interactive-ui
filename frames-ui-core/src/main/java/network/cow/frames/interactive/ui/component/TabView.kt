@@ -16,7 +16,7 @@ class TabView(position: Point = Point(), dimensions: Dimension = Dimensions.matc
 
     companion object {
         private const val BUTTON_HEIGHT_PERCENTAGE = 0.1075
-        private const val BUTTON_HORIZONTAL_MARGIN = 0.01
+        private const val BUTTON_HORIZONTAL_MARGIN = 0.014
         private const val BUTTON_VERTICAL_MARGIN = 0.025
     }
 
