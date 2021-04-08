@@ -37,14 +37,14 @@ class Button(
     private val background = ColorComponent(Point(), Dimensions.matchParent(), this.theme.highlightColor)
 
     private val underline = ColorComponent(
-        Point(0, Positions.matchPercent(1.0 - UNDERLINE_PERCENTAGE)),
-        Dimension(Dimensions.MATCH_PARENT, Dimensions.matchPercent(UNDERLINE_PERCENTAGE)),
+        Point(0, Positions.matchParentPercent(1.0 - UNDERLINE_PERCENTAGE)),
+        Dimension(Dimensions.MATCH_PARENT, Dimensions.matchParentPercent(UNDERLINE_PERCENTAGE)),
         this.theme.highlightColorDark
     )
 
     private val text = Text(
-        Point(Positions.matchPercent(TEXT_HORIZONTAL_PADDING * 0.5), 0),
-        Dimension(Dimensions.matchPercent(1.0 - TEXT_HORIZONTAL_PADDING), Dimensions.matchPercent(TEXT_HEIGHT_PERCENTAGE)),
+        Point(Positions.matchParentPercent(TEXT_HORIZONTAL_PADDING * 0.5), 0),
+        Dimension(Dimensions.matchParentPercent(1.0 - TEXT_HORIZONTAL_PADDING), Dimensions.matchParentPercent(TEXT_HEIGHT_PERCENTAGE)),
         this.content, this.theme.textColorOnHighlight, this.alignment
     )
 

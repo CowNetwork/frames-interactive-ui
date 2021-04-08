@@ -5,7 +5,7 @@ package network.cow.frames.interactive.ui
  */
 object Positions {
 
-    fun matchPercent(factor: Double) = Dimensions.matchPercent(factor)
+    fun matchParentPercent(factor: Double) = Dimensions.matchParentPercent(factor)
 
     fun isInPercentRange(value: Int) = Dimensions.isInPercentRange(value)
 

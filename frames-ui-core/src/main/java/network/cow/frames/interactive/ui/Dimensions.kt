@@ -8,12 +8,18 @@ import kotlin.math.roundToInt
  */
 object Dimensions {
 
-    private val MATCH_PARENT_PERCENT_MIN = -1000
-    private val MATCH_PARENT_PERCENT_MAX = -10999 // inclusive, leaves 10_000 magic values (0.0000 to 1.0000).
+    private const val MATCH_PARENT_PERCENT_MIN = -1000
+    private const val MATCH_PARENT_PERCENT_MAX = -10999 // inclusive, leaves 10_000 magic values (0.0000 to 1.0000).
 
-    val MATCH_PARENT = -1
+    const val MATCH_PARENT = -1
 
-    fun matchPercent(factor: Double): Int {
+    const val MATCH_PARENT_MIN = -2
+    const val MATCH_PARENT_MAX = -3
+
+    const val MATCH_THIS_WIDTH = -4
+    const val MATCH_THIS_HEIGHT = -5
+
+    fun matchParentPercent(factor: Double): Int {
         val factor = maxOf(0.0, minOf(factor, 1.0))
         val difference = MATCH_PARENT_PERCENT_MAX - MATCH_PARENT_PERCENT_MIN
         return (difference * factor).roundToInt() + MATCH_PARENT_PERCENT_MIN

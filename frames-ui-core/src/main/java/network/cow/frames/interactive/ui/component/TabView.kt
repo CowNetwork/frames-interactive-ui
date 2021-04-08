@@ -16,7 +16,7 @@ class TabView(position: Point = Point(), dimensions: Dimension = Dimensions.matc
 
     companion object {
         private const val BUTTON_HEIGHT_PERCENTAGE = 0.1075
-        private const val BUTTON_HORIZONTAL_MARGIN = 0.025
+        private const val BUTTON_HORIZONTAL_MARGIN = 0.01
         private const val BUTTON_VERTICAL_MARGIN = 0.025
     }
 
@@ -26,11 +26,11 @@ class TabView(position: Point = Point(), dimensions: Dimension = Dimensions.matc
 
     private var buttons: Array<Button> = emptyArray()
 
-    private var buttonView = Group(dimensions = Dimension(Dimensions.MATCH_PARENT, Dimensions.matchPercent(BUTTON_HEIGHT_PERCENTAGE)))
+    private var buttonView = Group(dimensions = Dimension(Dimensions.MATCH_PARENT, Dimensions.matchParentPercent(BUTTON_HEIGHT_PERCENTAGE)))
 
     private var contentView = Group(
-        Point(0, Positions.matchPercent(BUTTON_HEIGHT_PERCENTAGE + BUTTON_VERTICAL_MARGIN)),
-        Dimension(Dimensions.MATCH_PARENT, Dimensions.matchPercent(1.0 - BUTTON_HEIGHT_PERCENTAGE - BUTTON_VERTICAL_MARGIN))
+        Point(0, Positions.matchParentPercent(BUTTON_HEIGHT_PERCENTAGE + BUTTON_VERTICAL_MARGIN)),
+        Dimension(Dimensions.MATCH_PARENT, Dimensions.matchParentPercent(1.0 - BUTTON_HEIGHT_PERCENTAGE - BUTTON_VERTICAL_MARGIN))
     )
 
     init {
@@ -40,7 +40,9 @@ class TabView(position: Point = Point(), dimensions: Dimension = Dimensions.matc
 
     override fun onInitialize() {
         super.onInitialize()
-        this.selectedIndex = this.getFirstEnabledTabIndex()
+        if (this.selectedIndex < 0) {
+            this.selectedIndex = this.getFirstEnabledTabIndex()
+        }
     }
 
     private fun onTabUpdated(tab: Tab) {
@@ -59,12 +61,11 @@ class TabView(position: Point = Point(), dimensions: Dimension = Dimensions.matc
             this.buttons = Array(this.tabs.size) { index ->
                 val tab = this.tabs[index]
 
-                val padding = BUTTON_HORIZONTAL_MARGIN / this.tabs.size
-                val buttonWidth = (1.0 - padding * (this.tabs.size - 1)) / this.tabs.size
+                val buttonWidth = (1.0 - BUTTON_HORIZONTAL_MARGIN * (this.tabs.size - 1)) / this.tabs.size
 
                 val button = Button(
-                    Point(Positions.matchPercent(buttonWidth * index + padding * index), 0),
-                    Dimension(Dimensions.matchPercent(buttonWidth), Dimensions.MATCH_PARENT),
+                    Point(Positions.matchParentPercent(buttonWidth * index + BUTTON_HORIZONTAL_MARGIN * index), 0),
+                    Dimension(Dimensions.matchParentPercent(buttonWidth), Dimensions.MATCH_PARENT),
                     tab.label, HorizontalAlignment.CENTER
                 )
                 button.isToggle = true

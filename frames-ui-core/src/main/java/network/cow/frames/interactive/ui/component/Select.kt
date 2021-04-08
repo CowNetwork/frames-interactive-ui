@@ -29,15 +29,15 @@ class Select(position: Point = Point(), dimensions: Dimension = Dimensions.match
     init {
         val buttonWidth = (1.0 - DISPLAY_WIDTH_PERCENTAGE) / 2 - PADDING_PERCENTAGE
 
-        this.left = TextButton(Point(), Dimension(Dimensions.matchPercent(buttonWidth), Dimensions.MATCH_PARENT), "<", HorizontalAlignment.CENTER)
+        this.left = TextButton(Point(), Dimension(Dimensions.matchParentPercent(buttonWidth), Dimensions.MATCH_PARENT), "<", HorizontalAlignment.CENTER)
 
         this.display = TextButton(
-            Point(Dimensions.matchPercent(buttonWidth + PADDING_PERCENTAGE), 0),
-            Dimension(Dimensions.matchPercent(DISPLAY_WIDTH_PERCENTAGE), Dimensions.MATCH_PARENT),
+            Point(Dimensions.matchParentPercent(buttonWidth + PADDING_PERCENTAGE), 0),
+            Dimension(Dimensions.matchParentPercent(DISPLAY_WIDTH_PERCENTAGE), Dimensions.MATCH_PARENT),
             EMPTY_CONTENT, HorizontalAlignment.CENTER
         )
 
-        this.right = TextButton(Point(Dimensions.matchPercent(1.0 - buttonWidth), 0), Dimension(Dimensions.matchPercent(buttonWidth), Dimensions.MATCH_PARENT), ">", HorizontalAlignment.CENTER)
+        this.right = TextButton(Point(Dimensions.matchParentPercent(1.0 - buttonWidth), 0), Dimension(Dimensions.matchParentPercent(buttonWidth), Dimensions.MATCH_PARENT), ">", HorizontalAlignment.CENTER)
 
         val next = { value: Boolean ->
             if (value) {

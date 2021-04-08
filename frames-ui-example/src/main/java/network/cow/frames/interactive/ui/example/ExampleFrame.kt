@@ -2,6 +2,7 @@ package network.cow.frames.interactive.ui.example
 
 import network.cow.frames.alignment.HorizontalAlignment
 import network.cow.frames.color.ColorTransformer
+import network.cow.frames.color.DefaultColorTransformer
 import network.cow.frames.color.MinecraftColorPalette
 import network.cow.frames.component.Component
 import network.cow.frames.component.DummyComponent
@@ -25,12 +26,12 @@ import java.awt.Point
 /**
  * @author Benedikt Wüller
  */
-class ExampleFrame(canvasDimensions: Dimension, initialUpdateInterval: Long = 50L, transformer: ColorTransformer = MinecraftColorPalette()) :
-    InteractiveFrame(canvasDimensions, canvasDimensions, initialUpdateInterval, transformer) {
+class ExampleFrame(canvasDimensions: Dimension, initialUpdateInterval: Long = 50L, transformer: ColorTransformer = MinecraftColorPalette())
+    : InteractiveFrame(canvasDimensions, canvasDimensions, initialUpdateInterval, transformer) {
 
     private val window = Window(this.canvasDimensions, CowTheme())
 
-    private val progressBar = ProgressBar(Point(Positions.matchPercent(0.25), 125), Dimension(Dimensions.matchPercent(0.5), 22))
+    private val progressBar = ProgressBar(Point(Positions.matchParentPercent(0.25), 125), Dimension(Dimensions.matchParentPercent(0.5), 22))
 
     init {
         var count = 0
@@ -38,7 +39,7 @@ class ExampleFrame(canvasDimensions: Dimension, initialUpdateInterval: Long = 50
         val group = Group()
         val otherGroup = Group()
 
-        val select = Select(Point(Positions.matchPercent(0.25), 30), Dimension(Dimensions.matchPercent(0.5), 25))
+        val select = Select(Point(Positions.matchParentPercent(0.25), 30), Dimension(Dimensions.matchParentPercent(0.5), 25))
         select.options = arrayOf("Milk Me At Night", "Ugly Mode")
         select.setListener(select::selectedIndex) { _, new -> this.window.theme = if (new == 0) CowTheme() else DefaultTheme() }
 
@@ -49,20 +50,20 @@ class ExampleFrame(canvasDimensions: Dimension, initialUpdateInterval: Long = 50
             tabView.Tab("Demo", group),
         )
 
-        val backButton = TextButton(Point(Positions.matchPercent(0.25), 30), Dimension(Dimensions.matchPercent(0.5), 25), "Go back", HorizontalAlignment.CENTER)
+        val backButton = TextButton(Point(Positions.matchParentPercent(0.25), 30), Dimension(Dimensions.matchParentPercent(0.5), 25), "Go back", HorizontalAlignment.CENTER)
         backButton.setListener(backButton::isMouseDown) { _, new -> if (new) this.window.setParentView() }
         otherGroup.add(backButton)
 
-        val button = Button(Point(Positions.matchPercent(0.25), 30), Dimension(Dimensions.matchPercent(0.5), 25), "$count", HorizontalAlignment.CENTER)
+        val button = Button(Point(Positions.matchParentPercent(0.25), 30), Dimension(Dimensions.matchParentPercent(0.5), 25), "$count", HorizontalAlignment.CENTER)
         button.setListener(button::isActive) { _, new -> if (new) button.content = "${++count}" }
         group.add(button)
 
-        val switch = Switch(Point(Positions.matchPercent(0.25), 60), Dimension(Dimensions.matchPercent(0.5), 25))
+        val switch = Switch(Point(Positions.matchParentPercent(0.25), 60), Dimension(Dimensions.matchParentPercent(0.5), 25))
         switch.setListener(switch::isActive) { _, new -> button.isDisabled = new }
         switch.isActive = true
         group.add(switch)
 
-        val textButton = TextButton(Point(Positions.matchPercent(0.25), 90), Dimension(Dimensions.matchPercent(0.5), 25), "Text Button", HorizontalAlignment.CENTER)
+        val textButton = TextButton(Point(Positions.matchParentPercent(0.25), 90), Dimension(Dimensions.matchParentPercent(0.5), 25), "Text Button", HorizontalAlignment.CENTER)
         textButton.setListener(textButton::isMouseDown) { _, new -> if (new) this.window.setView(otherGroup) }
         group.add(textButton)
 

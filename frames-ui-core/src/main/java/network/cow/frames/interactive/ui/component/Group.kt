@@ -7,8 +7,8 @@ import java.awt.Dimension
 import java.awt.Graphics2D
 import java.awt.Point
 import java.awt.Rectangle
+import kotlin.math.ceil
 import kotlin.math.roundToInt
-import kotlin.reflect.KProperty
 
 /**
  * @author Benedikt Wüller
@@ -52,6 +52,7 @@ open class Group(position: Point = Point(), dimensions: Dimension = Dimensions.m
             this.resize(it)
 
             if (it !is UIComponent) return@forEach
+            it.isVisible = true
             it.theme = this.theme
         }
 
@@ -68,27 +69,39 @@ open class Group(position: Point = Point(), dimensions: Dimension = Dimensions.m
         val position = this.initialPositions[component] ?: return
 
         if (Positions.isInPercentRange(position.x)) {
-            component.position.x = (this.dimensions.width * Positions.getFactor(position.x)).roundToInt()
+            component.position.x = ceil(this.dimensions.width * Positions.getFactor(position.x)).toInt()
         }
 
         if (Positions.isInPercentRange(position.y)) {
-            component.position.y = (this.dimensions.height * Positions.getFactor(position.y)).roundToInt()
+            component.position.y = ceil(this.dimensions.height * Positions.getFactor(position.y)).toInt()
         }
 
         if (Dimensions.isInPercentRange(dimensions.width)) {
-            component.dimensions.width = (this.dimensions.width * Dimensions.getFactor(dimensions.width)).roundToInt()
-        }
-
-        if (dimensions.width == Dimensions.MATCH_PARENT) {
+            component.dimensions.width = ceil(this.dimensions.width * Dimensions.getFactor(dimensions.width)).toInt()
+        } else if (dimensions.width == Dimensions.MATCH_PARENT) {
             component.dimensions.width = this.dimensions.width
+        } else if (dimensions.width == Dimensions.MATCH_PARENT_MIN) {
+            component.dimensions.width = minOf(this.dimensions.width, this.dimensions.height)
+        } else if (dimensions.width == Dimensions.MATCH_PARENT_MAX) {
+            component.dimensions.width = maxOf(this.dimensions.width, this.dimensions.height)
         }
 
         if (Dimensions.isInPercentRange(dimensions.height)) {
-            component.dimensions.height = (this.dimensions.height * Dimensions.getFactor(dimensions.height)).roundToInt()
+            component.dimensions.height = ceil(this.dimensions.height * Dimensions.getFactor(dimensions.height)).toInt()
+        } else if (dimensions.height == Dimensions.MATCH_PARENT) {
+            component.dimensions.height = this.dimensions.height
+        } else if (dimensions.height == Dimensions.MATCH_PARENT_MIN) {
+            component.dimensions.height = minOf(this.dimensions.width, this.dimensions.height)
+        } else if (dimensions.height == Dimensions.MATCH_PARENT_MAX) {
+            component.dimensions.height = maxOf(this.dimensions.width, this.dimensions.height)
         }
 
-        if (dimensions.height == Dimensions.MATCH_PARENT) {
-            component.dimensions.height = this.dimensions.height
+        if (dimensions.width == Dimensions.MATCH_THIS_HEIGHT) {
+            component.dimensions.width = component.dimensions.height
+        }
+
+        if (dimensions.height == Dimensions.MATCH_THIS_WIDTH) {
+            component.dimensions.height = component.dimensions.width
         }
     }
 
@@ -163,5 +176,23 @@ open class Group(position: Point = Point(), dimensions: Dimension = Dimensions.m
     }
 
     override fun onUpdate() = Unit
+
+    override fun onInitialize() {
+        super.onInitialize()
+
+        this.components.forEach {
+            if (it !is UIComponent) return@forEach
+            it.isVisible = true
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        this.components.forEach {
+            if (it !is UIComponent) return@forEach
+            it.isVisible = false
+        }
+    }
 
 }

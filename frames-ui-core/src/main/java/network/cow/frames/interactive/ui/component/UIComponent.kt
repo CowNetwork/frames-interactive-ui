@@ -59,10 +59,6 @@ abstract class UIComponent(position: Point = Point(), dimensions: Dimension = Di
             this.currentDimensions = Dimension(this.dimensions)
         }
 
-        if (!this.isVisible) {
-            this.isVisible = true
-        }
-
         this.onUpdateTime(currentTime, delta)
     }
 
